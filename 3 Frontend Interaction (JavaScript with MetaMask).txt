@@ -1,0 +1,64 @@
+const contractAddress = "YOUR_DEPLOYED_CONTRACT_ADDRESS";
+const contractABI = [
+    {
+        "inputs": [
+            { "internalType": "address payable", "name": "recipient", "type": "address" }
+        ],
+        "name": "transferNative",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            { "internalType": "address", "name": "token", "type": "address" },
+            { "internalType": "address", "name": "recipient", "type": "address" },
+            { "internalType": "uint256", "name": "amount", "type": "uint256" }
+        ],
+        "name": "transferERC20",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+];
+
+async function connectWallet() {
+    if (window.ethereum) {
+        try {
+            const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+            console.log("Connected account:", accounts[0]);
+        } catch (error) {
+            console.error("Error connecting wallet:", error);
+        }
+    } else {
+        alert("MetaMask is not installed!");
+    }
+}
+
+async function sendNative(recipient, amount) {
+    try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        const tx = await contract.transferNative(recipient, { value: ethers.utils.parseEther(amount) });
+        await tx.wait();
+        console.log("Transaction successful:", tx.hash);
+    } catch (error) {
+        console.error("Error sending native currency:", error);
+    }
+}
+
+async function sendERC20(tokenAddress, recipient, amount) {
+    try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        const tx = await contract.transferERC20(tokenAddress, recipient, ethers.utils.parseUnits(amount, 18));
+        await tx.wait();
+        console.log("Transaction successful:", tx.hash);
+    } catch (error) {
+        console.error("Error sending ERC-20 token:", error);
+    }
+}

@@ -1,0 +1,14 @@
+const hre = require("hardhat");
+
+async function main() {
+    const CryptoTransfer = await hre.ethers.getContractFactory("CryptoTransfer");
+    const cryptoTransfer = await CryptoTransfer.deploy();
+
+    await cryptoTransfer.deployed();
+    console.log("CryptoTransfer deployed to:", cryptoTransfer.address);
+}
+
+main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+});

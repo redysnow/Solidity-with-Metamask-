@@ -1,0 +1,10 @@
+npm install --save-dev hardhat
+npm install ethers dotenv
+npx hardhat compile
+npx hardhat run scripts/deploy.js --network rinkeby
+
+
+Commentary 
+
+5. Run the Frontend
+Use a local server like Live Server to open your index.html, which includes the index.js file
